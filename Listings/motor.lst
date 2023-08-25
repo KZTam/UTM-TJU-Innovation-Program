@@ -1,0 +1,44 @@
+C51 COMPILER V9.60.7.0   MOTOR                                                             08/21/2023 15:02:40 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MOTOR
+OBJECT MODULE PLACED IN .\Objects\motor.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE motor.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\mot
+                    -or.lst) TABS(2) OBJECT(.\Objects\motor.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          //位定义
+   3          sbit IN1 = P1^1;
+   4          sbit IN2 = P1^2;
+   5          sbit IN3 = P1^3;
+   6          sbit IN4 = P1^4;
+   7          
+   8          
+   9          void L_motor_go ()  //左侧电机转动
+  10          {IN1 = 0;IN2 = 1;}
+  11          void L_motor_back ()  //左侧电机反转
+  12          {IN1 = 1;IN2 = 0;}
+  13          void L_motor_stop ()  //左侧电机停止
+  14          {IN1 = 0;IN2 = 0;}
+  15          void R_motor_go ()  //右侧电机转动
+  16          {IN3 = 1;IN4 = 0;}
+  17          void R_motor_back ()  //右侧电机反转
+  18          {IN3 = 0;IN4 = 1;}
+  19          void R_motor_stop ()  //右侧电机停止
+  20          {IN3 = 0;IN4 = 0;}
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     30    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

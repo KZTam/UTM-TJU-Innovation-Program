@@ -1,0 +1,161 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              08/26/2023 00:16:53 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "car.h"
+   2          #include "xunji.h"
+   3          #include "motor.h"
+   4          #include "chaoshengbo.h"
+   5          #include "bluebee.h"
+   6          #include <REGX52.H>
+   7          
+   8          sbit S1 = P3^5;
+   9          sbit S2 = P3^4;
+  10          sbit S3 = P3^3;
+  11          sbit S4 = P3^2;
+  12          sbit LED7 = P1^6;
+  13          sbit LED8 = P1^7;
+  14          
+  15          unsigned int dist = 0;  //in cm
+  16          int ultra_counter = 0;
+  17          
+  18          int main_flag = 0;
+  19          int avoid_flag = 0;
+  20          
+  21          //void Timer2_routine(void) interrupt 5 //not work
+  22          //{
+  23          ////  TH2 = 0xFF;
+  24          ////  TL2 = 0xFF;
+  25          //  RCAP2H = 0xFF;
+  26          //  RCAP2L = 0xA4;
+  27          //  LED7 = !LED7;
+  28          //  
+  29          //  if(main_flag) linefollow();
+  30          //}
+  31          
+  32          int main ()
+  33          {
+  34   1        
+  35   1        Timer0_Init();
+  36   1        Timer1_Init();
+  37   1        Timer2_UART_Init();
+*** WARNING C206 IN LINE 37 OF main.c: 'Timer2_UART_Init': missing function-prototype
+  38   1        //Timer2_autoreload_init();
+  39   1          EA = 1; 
+  40   1      
+  41   1        while (1)
+  42   1        {
+  43   2          if(!S4){
+  44   3            LED8 = !LED8;
+  45   3            main_flag = !main_flag;
+  46   3            while(!S4);
+  47   3          }
+  48   2          UART_Receive();
+  49   2            if(RI == 1){
+  50   3            switch(SBUF)
+  51   3          {
+  52   4            case 'F':
+  53   4              car_go_manual();
+C51 COMPILER V9.60.7.0   MAIN                                                              08/26/2023 00:16:53 PAGE 2   
+
+  54   4            break;
+  55   4            
+  56   4          case 'B':
+  57   4              car_back_manual();
+*** WARNING C206 IN LINE 57 OF main.c: 'car_back_manual': missing function-prototype
+  58   4            break;
+  59   4            
+  60   4          case 'L':
+  61   4              car_leftstop2();
+  62   4            break;
+  63   4            
+  64   4          case 'R':
+  65   4              car_rightstop2();
+  66   4            break;
+  67   4            
+  68   4          case 'G':
+  69   4              car_leftgo();
+  70   4            break;
+  71   4      
+  72   4          case 'I':
+  73   4              car_rightgo();
+  74   4            break;
+  75   4      
+  76   4          case 'H':
+  77   4              car_leftback();
+  78   4            break;
+  79   4            
+  80   4          case 'J':
+  81   4              car_rightback();
+  82   4            break;
+  83   4          
+  84   4          case 'W':
+  85   4            main_flag = 1;
+  86   4            LED8 = 1;
+  87   4            break;
+  88   4              
+  89   4          case 'X':
+  90   4            main_flag = 0;
+  91   4            car_stop();
+  92   4            LED8 = 0;
+  93   4          break;
+  94   4                
+  95   4            default:
+  96   4              car_stop();
+  97   4            break;
+  98   4          }
+  99   3          ES = 1;   //enable the UART IT again to receive next message
+ 100   3        }
+ 101   2            //ultrasound code (will delay 10microseconds and cause line follow sensitivity reduced)
+ 102   2          if(ultra_counter > 10000){  //0.5s interval
+ 103   3              ultrasound_send();
+*** WARNING C206 IN LINE 103 OF main.c: 'ultrasound_send': missing function-prototype
+ 104   3              Echo_wait();
+*** WARNING C206 IN LINE 104 OF main.c: 'Echo_wait': missing function-prototype
+ 105   3              LED7 = !LED7;
+ 106   3              dist = (unsigned int)(((float) (TH1<<8 | TL1))*0.0343/2);
+ 107   3              TH1 = 0;
+ 108   3              TL1 = 0;
+ 109   3              ultra_counter = 0;
+ 110   3              avoid_flag = 0;
+ 111   3          }
+ 112   2          ultra_counter++;
+C51 COMPILER V9.60.7.0   MAIN                                                              08/26/2023 00:16:53 PAGE 3   
+
+ 113   2            
+ 114   2          if(main_flag){
+ 115   3            if(dist <= 25 && !avoid_flag){ 
+ 116   4              //main_flag = 0;
+ 117   4              avoidance();
+*** WARNING C206 IN LINE 117 OF main.c: 'avoidance': missing function-prototype
+ 118   4              avoid_flag = 1;
+ 119   4            }
+ 120   3            else  
+ 121   3              linefollow();
+ 122   3          }
+ 123   2          else {
+ 124   3            //car_stop(); //uncomment this when manual control disabled
+ 125   3          }
+ 126   2        }
+ 127   1      }
+ 128          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    272    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      8    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  5 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,103 @@
+C51 COMPILER V9.60.7.0   CHAOSHENGBO                                                       08/22/2023 15:45:17 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE CHAOSHENGBO
+OBJECT MODULE PLACED IN .\Objects\chaoshengbo.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE chaoshengbo.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
+                    -gs\chaoshengbo.lst) TABS(2) OBJECT(.\Objects\chaoshengbo.obj)
+
+line level    source
+
+   1          #include <REG52.H>
+   2          #include <intrins.h>
+   3          #include "car.h"
+   4          #include "xunji.h"
+   5          
+   6          unsigned int  time=0;
+   7          unsigned int  timer=0;
+   8          unsigned char posit=0;
+   9          unsigned long S=0;
+  10          //bit      flag =0;
+  11          //unsigned charconst discode[] ={ 0xC0,0xF9,0xA4,0xB0,0x99,0x92,0x82,0xF8,0x80,0x90,0xBF,0xff/*-*/};
+  12          //unsigned charconst positon[3]={ 0xfe,0xfd,0xfb};
+  13          //unsigned chardisbuff[4]    ={ 0,0,0,0};
+  14          
+  15          sbit Trig = P2^4;   
+  16          sbit Echo = P2^5;
+  17          sbit digit1 = P1^0;
+  18          sbit digit2 = P1^1;
+  19          sbit digit3 = P1^2;
+  20          sbit digit4 = P1^3;
+  21          
+  22          //intcounter1;
+  23          
+  24          unsigned int sum;
+  25          unsigned int mindistance = 20;
+  26          
+  27          void Delay20us ()   //@11.0592MHz
+  28          {
+  29   1        unsigned char i;
+  30   1      
+  31   1        _nop_();
+  32   1        i = 6;
+  33   1        while (--i);
+  34   1      }
+  35          
+  36          void delaymicro(unsigned int micro)
+  37          {
+  38   1         while(micro--) {
+  39   2              _nop_();
+  40   2              _nop_();
+  41   2              _nop_();
+  42   2              _nop_();
+  43   2          } 
+  44   1      }
+  45            
+  46          void chaoshengbo ()   //ultrasound
+  47          { 
+  48   1        Trig = 1;
+  49   1        Delay20us();
+  50   1        Trig = 0;
+  51   1        
+  52   1        if (Echo == 1)
+  53   1        {
+  54   2          TR1 = 0;
+C51 COMPILER V9.60.7.0   CHAOSHENGBO                                                       08/22/2023 15:45:17 PAGE 2   
+
+  55   2          sum = ((TH1*256+TL1)*0.034)/2+1;
+  56   2          if(mindistance > sum)
+  57   2          {
+  58   3            car_stop ();
+  59   3          }
+  60   2          else 
+  61   2          {
+  62   3            xunji ();
+  63   3          }
+  64   2        }
+  65   1      }
+  66          
+  67          void ultrasound_send(){
+  68   1        Trig = 1;
+  69   1        delaymicro(10);
+  70   1        Trig = 0;
+  71   1      }
+  72          void Echo_wait(){
+  73   1          while(!Echo);
+  74   1          TR1 = 1;
+  75   1          while(Echo);
+  76   1          TR1 = 0;
+  77   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    131    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

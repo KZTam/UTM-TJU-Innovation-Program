@@ -1,0 +1,8 @@
+".\Objects\main.obj",
+".\Objects\car.obj",
+".\Objects\motor.obj",
+".\Objects\xunji.obj",
+".\Objects\chaoshengbo.obj",
+".\Objects\bluebee.obj" 
+TO ".\Objects\heiheihei" 
+PRINT(".\Listings\heiheihei.m51")

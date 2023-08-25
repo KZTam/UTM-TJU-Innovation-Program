@@ -1,0 +1,157 @@
+C51 COMPILER V9.60.7.0   CAR                                                               08/23/2023 12:40:48 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE CAR
+OBJECT MODULE PLACED IN .\Objects\car.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE car.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\car.l
+                    -st) TABS(2) OBJECT(.\Objects\car.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "motor.h"
+   3          
+   4          sbit  ENA = P1^0;//enable pin for left motor
+   5          sbit  ENB = P1^5;//enable pin for right motor
+   6          
+   7          unsigned char counter0,speed;
+   8          
+   9          void Timer0_Init()        
+  10          {
+  11   1        TMOD |= 0x01;     //set mode
+  12   1        TL0 = 0xA4;     // starting oxffa4 increment to 0xffff
+  13   1        TH0 = 0xFF;      
+  14   1        TF0 = 0;    //reset the timer 0 flag, when timer overflow, TF0 = 1 
+  15   1        TR0 = 1;      //start timer 0
+  16   1        ET0 = 1;         //timer 0 enable
+  17   1        PT0 = 1;        //timer priority (higher the value, higher priority)
+  18   1      }
+  19          
+  20          void Timer1_Init(){ //no use
+  21   1        TMOD |= 0x10;
+  22   1        TL1 = 0;  //0xF830
+  23   1        TH1 = 0;
+  24   1        TF1 = 0;
+  25   1        TR1 = 0;
+  26   1        ET1 = 1;
+  27   1        PT1 = 1;
+  28   1      }
+  29          
+  30          void Timer1_Routine() interrupt 2
+  31          {
+  32   1        //nothing
+  33   1      }
+  34          
+  35          void Timer0_Routine() interrupt 1  //timer 0 innterrupt (PWM)
+  36          {
+  37   1        TL0 = 0xA4;      
+  38   1        TH0 = 0xFF;      
+  39   1          
+  40   1        counter0++;
+  41   1        if (counter0 >=100)
+  42   1        {
+  43   2          counter0 = 0;
+  44   2        }
+  45   1        if (counter0 < speed) //PWM for motors
+  46   1        {
+  47   2          ENA = 1;
+  48   2          ENB = 1;
+  49   2        }
+  50   1        else
+  51   1        {
+  52   2          ENA = 0;
+  53   2          ENB = 0;
+  54   2        }
+C51 COMPILER V9.60.7.0   CAR                                                               08/23/2023 12:40:48 PAGE 2   
+
+  55   1      }
+  56          
+  57          void car_go ()   //foward
+  58          {
+  59   1        speed = 35; //50
+  60   1        L_motor_go ();
+  61   1        R_motor_go ();
+  62   1      }
+  63          void car_go_manual ()   //foward
+  64          {
+  65   1        speed = 50; //50
+  66   1        L_motor_go ();
+  67   1        R_motor_go ();
+  68   1      }
+  69          void car_back_manual ()   //hou tui
+  70          {
+  71   1        speed = 50; //50
+  72   1        L_motor_back ();
+  73   1        R_motor_back ();
+  74   1      }
+  75          void car_stop ()    //stop
+  76          {
+  77   1        speed = 0;
+  78   1        L_motor_stop ();
+  79   1        R_motor_stop ();
+  80   1      }
+  81          void car_leftgo ()    //turn left, left motor stop
+  82          {
+  83   1        speed = 75; //45
+  84   1        R_motor_go ();
+  85   1        L_motor_stop ();
+  86   1      }
+  87          void car_rightgo ()    //turn right, right motor stop
+  88          {
+  89   1        speed = 75;
+  90   1        L_motor_go ();
+  91   1        R_motor_stop ();
+  92   1      }
+  93          void car_leftback ()    //turn left, left motor stop
+  94          {
+  95   1        speed = 75; //45
+  96   1        R_motor_back ();
+  97   1        L_motor_stop ();
+  98   1      }
+  99          void car_rightback ()    //turn right, right motor stop
+ 100          {
+ 101   1        speed = 75;
+ 102   1        L_motor_back ();
+ 103   1        R_motor_stop ();
+ 104   1      }
+ 105          void car_rightstop ()   //lock point turn right (fast)
+ 106          {
+ 107   1        speed = 100;
+ 108   1        L_motor_go ();
+ 109   1        R_motor_back ();
+ 110   1      }
+ 111          void car_leftstop ()   //lock point turn left (fast)
+ 112          {
+ 113   1        speed = 100;
+ 114   1        R_motor_go ();
+ 115   1        L_motor_back ();
+ 116   1      }
+C51 COMPILER V9.60.7.0   CAR                                                               08/23/2023 12:40:48 PAGE 3   
+
+ 117          
+ 118          void car_rightstop2 ()   //lock point turn right 
+ 119          {
+ 120   1        speed = 65; //90
+ 121   1        L_motor_go ();
+ 122   1        R_motor_back ();
+ 123   1      }
+ 124          void car_leftstop2 ()   //lock point turn left 
+ 125          {
+ 126   1        speed = 65; //90
+ 127   1        R_motor_go ();
+ 128   1        L_motor_back ();
+ 129   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    188    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

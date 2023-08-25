@@ -1,0 +1,130 @@
+C51 COMPILER V9.60.7.0   BLUEBEE                                                           08/22/2023 14:53:54 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE BLUEBEE
+OBJECT MODULE PLACED IN .\Objects\bluebee.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE bluebee.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\b
+                    -luebee.lst) TABS(2) OBJECT(.\Objects\bluebee.obj)
+
+line level    source
+
+   1          #include "bluebee.h"
+   2          #include <REGX52.H>
+   3          
+   4          char rxdata;
+   5          int uartflag;
+   6          
+   7          void Timer2_UART_init(){
+   8   1        T2CON = 0x34;
+   9   1        PCON &= 0x7F; //115200?
+  10   1        TH2 = 0xFF;
+  11   1        TL2 = 0xFD;
+  12   1        RCAP2H = 0xFF;
+  13   1        RCAP2L = 0xFD;
+  14   1        SCON = 0x50;    // serial port initialisation
+  15   1        ES = 1;     // enable serial port interrupt
+  16   1      }
+  17          
+  18          void Timer2_autoreload_init(){
+  19   1        T2CON = 0x04;
+  20   1        PCON &= 0x7F;
+  21   1        TH2 = 0xFF;
+  22   1        TL2 = 0xFF; 
+  23   1        RCAP2H = 0xFF;
+  24   1        RCAP2L = 0xA4;
+  25   1        PT2 = 1;
+  26   1      }
+  27          
+  28          //void UART_init(){
+  29          //  PCON &= 0x7F;
+  30          //  SM0 = 0;  
+  31          //  SM1 = 1;  //mode = 01 (8-bits UART with variable baud rate)
+  32          //  REN = 1;  //receive enable
+  33          //  TI = 0;
+  34          //  RI = 0;
+  35          //  ES = 1; //serial port interruptEN
+  36          //}
+  37          
+  38          void UARTRxCallback(void) interrupt 4
+  39          {
+  40   1        RI = 0;
+  41   1        rxdata = SBUF;
+  42   1        ES = 0;
+  43   1      }
+  44          
+  45          void UART_Receive(){
+  46   1        ES = 0;
+  47   1        RI = 0;
+  48   1        rxdata = SBUF;
+  49   1        while(!RI);
+  50   1      }
+  51          
+  52          //void manual_control(void)
+  53          //{
+  54          //  if(RI == 1){
+C51 COMPILER V9.60.7.0   BLUEBEE                                                           08/22/2023 14:53:54 PAGE 2   
+
+  55          //      switch(rxdata)
+  56          //    {
+  57          //      case 'F':
+  58          //        car_go_manual();
+  59          //      break;
+  60          //      
+  61          //    case 'B':
+  62          //        car_back_manual();
+  63          //      break;
+  64          //      
+  65          //    case 'L':
+  66          //        car_leftstop2();
+  67          //      break;
+  68          //      
+  69          //    case 'R':
+  70          //        car_rightstop2();
+  71          //      break;
+  72          //      
+  73          //    case 'G':
+  74          //        car_leftgo();
+  75          //      break;
+  76          
+  77          //    case 'I':
+  78          //        car_rightgo();
+  79          //      break;
+  80          
+  81          //    case 'H':
+  82          //        car_leftback();
+  83          //      break;
+  84          //      
+  85          //    case 'J':
+  86          //        car_rightback();
+  87          //      break;
+  88          //    
+  89          //    case 'W':
+  90          //      uartflag = 1;
+  91          //      break;
+  92          //        
+  93          //    case 'X':
+  94          //      uartflag = 0;
+  95          //      car_stop();
+  96          //    break;
+  97          //          
+  98          //      default:
+  99          //        car_stop();
+ 100          //      break;
+ 101          //    }
+ 102          //    ES = 1;   //enable the UART IT again to receive next message
+ 103          //  }
+ 104          //}
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     64    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      3    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
